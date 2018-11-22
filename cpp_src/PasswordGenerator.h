@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include <tuple>
 
 enum PassType {
     chars, nums
@@ -14,14 +15,15 @@ enum PassType {
 
 class PasswordGenerator {
     PassType pass_type_;
-    int length_;
 
-    static std::string Numbers(int index, int length);
+    static std::string Numbers(int index);
 
-    static std::string Characters(int index, int length);
+    static std::string Characters(int index);
+
+    static std::tuple<int, int> CalcLengthCartesian(int index, int base);
 
 public:
-    explicit PasswordGenerator(enum PassType pass_type, int length);
+    explicit PasswordGenerator(enum PassType pass_type);
 
     std::string operator()(int index);
 
