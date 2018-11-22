@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     PasswordGenerator password_generator = PasswordGenerator(password_type);
     Hasher hasher = Hasher(hash_type);
 
-    for (int i = start; i < end; i++) {
+    for (int i = start; i < end && i < password_generator.Count(); i++) {
         if (hasher(password_generator(i)) == password){
             std::cout << "success! password: " << password_generator(i) << std::endl;
             return 0;

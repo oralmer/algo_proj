@@ -52,7 +52,7 @@ int PasswordGenerator::Count() {
     switch (pass_type_) {
         case nums:
         case chars:
-            return INT8_MAX;
+            return INT_MAX;
         default:
             throw std::runtime_error("invalid enum in password generator");
     }
