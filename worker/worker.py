@@ -1,7 +1,5 @@
 import argparse
-import os
 import subprocess
-import tempfile
 
 # TODO: something better as an enum
 HashType = {'id': 0}
@@ -40,12 +38,14 @@ def subprocess_search(args):
     print(args.hash)
 
     processes = []
+    #TODO: manage preocesses dynamically, maybe select? we dont want to be stopped by one messed up process
     for i in range(args.start, args.end, split):
         processes.append(open_process(args, i, split))
         if len(processes) >= args.max_subproc:
             for p in processes:
                 p.wait()
                 res = p.communicate()[0]
+                #TODO: there has to be another way
                 if res[0] == b'1'[0]:
                     print('found password: {}'.format(res[2:]))
                     return res[2:]
