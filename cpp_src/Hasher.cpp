@@ -1,13 +1,9 @@
 #include <utility>
 
-//
-// Created by or on 11/19/2018.
-//
-
 #include "Hasher.h"
 
 std::string Hasher::operator()(std::string password) {
-    switch (hash_type_) {
+    switch (m_hash_type) {
         case id:
             return IdHash(std::move(password));
         default:
@@ -19,4 +15,4 @@ std::string Hasher::IdHash(std::string password) {
     return password;
 }
 
-Hasher::Hasher(enum HashType hash_type) : hash_type_(hash_type) {}
+Hasher::Hasher(enum HashType hash_type) : m_hash_type(hash_type) {}
