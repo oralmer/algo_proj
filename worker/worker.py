@@ -1,5 +1,6 @@
 import argparse
 import subprocess
+import json
 
 # TODO: something better as an enum
 HashType = {'id': 0}
@@ -35,20 +36,19 @@ def subprocess_search(args):
         split = args.end - args.start
     else:
         split = args.split
-    print(args.hash)
 
     processes = []
-    #TODO: manage preocesses dynamically, maybe select? we dont want to be stopped by one messed up process
+    # TODO: manage preocesses dynamically, maybe select? we dont want to be stopped by one messed up process
+    # TODO +: use python multiprocessing - requires proper cpp - python interface
     for i in range(args.start, args.end, split):
         processes.append(open_process(args, i, split))
         if len(processes) >= args.max_subproc:
             for p in processes:
                 p.wait()
-                res = p.communicate()[0]
-                #TODO: there has to be another way
-                if res[0] == b'1'[0]:
-                    print('found password: {}'.format(res[2:]))
-                    return res[2:]
+                res = json.loads(p.communicate()[0])
+                if res['result']:
+                    print('found password: {}'.format(res['password']))
+                    return res['password']
             processes = []
     print('failed!')
     return None
