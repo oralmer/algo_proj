@@ -16,9 +16,9 @@ class PasswordSetting(Base):
     complete_pass = Column(String(255))
     is_done = Column(Boolean)
 
-    def __init__(self, pass_type, hash_type, hash):
+    def __init__(self, pass_type, hash_type, hash_):
         self.pass_type = pass_type
         self.hash_type = hash_type
-        self.hash = hash
+        self.hash = hash_
         self.is_done = False
         self.complete_pass = None

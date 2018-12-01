@@ -12,7 +12,6 @@ class Status(pyEnum):
 
 class WorkRange(Base):
     __tablename__ = 'work_ranges'
-    # added key because I was forced to, is it necessary?
     id = Column(Integer, primary_key=True)
     start = Column(Integer)
     end = Column(Integer)

@@ -1,12 +1,23 @@
 import argparse
 import inspect
+import time
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import create_engine
 from algo_proj.DB_objects.base import Base
 from algo_proj.DB_objects.password_setting import PasswordSetting, HashType
 from algo_proj.DB_objects.work_range import WorkRange
-from algo_proj.utils.DB_utils import session_scope
+from algo_proj.utils.DB_utils import session_factory_scope
+
+
+def clean_finished_work(session):
+    session.query(WorkRange).filter(WorkRange.pass_settings_id == PasswordSetting.id,
+                                    PasswordSetting.is_done).delete(synchronize_session=False)
+
+
+def get_password(pass_id, session):
+    return session.query(PasswordSetting). \
+        filter(PasswordSetting.id == pass_id, PasswordSetting.is_done).first()
 
 
 def enum_to_dict(enum):
@@ -44,14 +55,27 @@ def parse_arguments():
 
 if __name__ == '__main__':
     args = parse_arguments()
-    print(args)
     engine = create_engine(
         'mysql+pymysql://{}:{}@{}:{}/{}'.format(args.user, args.pass_, args.host, args.port, args.DB_name))
-    Session = sessionmaker(bind=engine)
+    session_factory = sessionmaker(bind=engine)
     Base.metadata.create_all(engine)
-    with session_scope(Session) as session:
+
+    with session_factory_scope(session_factory) as session:
+        clean_finished_work(session)
+
+    with session_factory_scope(session_factory) as session:
         # TODO: write hash_type less somehow.
         # pass_type is a string in preparation for next iteration
         password_settings = PasswordSetting(str(args.pass_type), HashType(hash_type[args.hash_type]), args.hash)
         session.add(password_settings)
+        session.flush()  # so we can get ID
+        pass_id = password_settings.id
         session.add_all(gen_ranges(args.start, args.end, args.split, password_settings))
+
+    while True:  # TODO: another way?
+        time.sleep(5)
+        with session_factory_scope(session_factory) as session:
+            res = get_password(pass_id, session)
+            if res:
+                print("done! password is: {}".format(res.complete_pass))
+                break
