@@ -21,9 +21,13 @@ def get_password(pass_id, session):
 
 
 def enum_to_dict(enum):
-    return {pair[0]: pair[1].value for pair in
+    """turns an enum class into a name:value dict"""
+    return {member_name_val[0]: member_name_val[1].value for member_name_val in
             inspect.getmembers(enum, lambda a: not (inspect.isroutine(a))) if
-            all([pair[0][0:2] != '__', pair[0][-2:] != '__', pair[0] != 'name', pair[0] != 'value'])}
+            all([member_name_val[0][0:2] != '__',
+                 member_name_val[0][-2:] != '__',
+                 member_name_val[0] != 'name',
+                 member_name_val[0] != 'value'])}
 
 
 hash_type = enum_to_dict(HashType)

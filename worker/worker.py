@@ -14,7 +14,8 @@ from algo_proj.utils.DB_utils import session_factory_scope, session_instance_sco
 def get_work(session):
     with session_instance_scope(session):
         res = session.query(WorkRange, PasswordSetting).join(PasswordSetting). \
-            filter(WorkRange.status == Status.free, ~PasswordSetting.is_done).first()
+            filter(WorkRange.status == Status.free, ~PasswordSetting.is_done). \
+            with_for_update().first()
         if not res:
             return None, None
         work_range, pass_settings = res
