@@ -1,35 +1,35 @@
-//
-// Created by or on 11/18/2018.
-//
 
-#ifndef CPP_SRC_PASSWORD_GENERATOR_H
-#define CPP_SRC_PASSWORD_GENERATOR_H
-
+#pragma once
 
 #include <string>
 #include <tuple>
+
+#define UNBOUNDED SIZE_MAX
 
 enum PassType {
     chars, nums
 };
 
+struct PassLength {
+    int length;
+    int sum;
+};
+
 class PasswordGenerator {
-    PassType pass_type_;
+    PassType m_pass_type;
 
-    static std::string Numbers(int index);
+    static std::string GenerateCartesian(size_t index, char zero_char, int char_num);
 
-    static std::string Characters(int index);
+    static std::string GenerateCartesian(size_t index, char zero_char, int char_num, int length);
 
-    static std::tuple<int, int> CalcLengthCartesian(int index, int base);
+    static PassLength CalcLengthCartesian(size_t index, int base);
 
 public:
     explicit PasswordGenerator(enum PassType pass_type);
 
-    std::string operator()(int index);
+    std::string operator()(size_t index);
 
-    int Count();
+    size_t IterSize();
 
 };
 
-
-#endif //CPP_SRC_PASSWORD_GENERATOR_H

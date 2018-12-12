@@ -1,9 +1,5 @@
-//
-// Created by or on 11/19/2018.
-//
 
-#ifndef CPP_SRC_HASHER_H
-#define CPP_SRC_HASHER_H
+#pragma once
 
 #include <string>
 
@@ -12,7 +8,7 @@ enum HashType {
 };
 
 class Hasher {
-    HashType hash_type_;
+    HashType m_hash_type;
 public:
     explicit Hasher(enum HashType hash_type);
 
@@ -21,5 +17,3 @@ public:
     static std::string IdHash(std::string password);
 };
 
-
-#endif //CPP_SRC_HASHER_H
