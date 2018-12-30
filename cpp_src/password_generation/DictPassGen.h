@@ -4,10 +4,11 @@
 #include "PassGenFactory.h"
 #include "nlohmann/json.hpp"
 
-class CharPassGen: public IPassGen {
-    std::vector<char> m_characters;
+class DictPassGen: public IPassGen {
+    static std::string get_current_dir();
+    std::vector<std::string> m_words;
 public:
-    explicit CharPassGen(nlohmann::json params);
+    explicit DictPassGen(nlohmann::json params);
     size_t GetLength() override;
     std::string operator()(size_t index) override;
 };

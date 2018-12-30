@@ -17,15 +17,15 @@ std::string OrPassGen::operator()(size_t index) {
     }
     for(auto&& gen: m_sub_generators){
         if(index < gen->GetLength()){
-            return gen->operator()(index);
+            return (*gen)(index);
         }
         index -= gen->GetLength();
     }
 }
 
-OrPassGen::OrPassGen(PassGenParams params) {
+OrPassGen::OrPassGen(nlohmann::json params) {
     m_length = 0;
-    for(PassGenParams& sub_params: params.m_sub_parts){
+    for(nlohmann::json& sub_params: params[SUB_GEN]){
         m_sub_generators.push_back(PassGenFactory::BuildPassGen(sub_params));
     }
 }

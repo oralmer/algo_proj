@@ -16,16 +16,16 @@ std::string CartesianPassGen::operator()(size_t index) {
         throw std::runtime_error("index out of range in CartesianPassGen");
     }
     std::string password;
-    for(auto&& gen: m_sub_generators){
-        password += gen->operator()(index % gen->GetLength());
+    for(const auto& gen: m_sub_generators){
+        password += (*gen)(index % gen->GetLength());
         index /= gen->GetLength();
     }
     return password;
 }
 
-CartesianPassGen::CartesianPassGen(PassGenParams params) {
+CartesianPassGen::CartesianPassGen(nlohmann::json pramas) {
     m_length = 0;
-    for(PassGenParams& sub_params: params.m_sub_parts){
+    for(nlohmann::json& sub_params: pramas[SUB_GEN]){
         m_sub_generators.push_back(PassGenFactory::BuildPassGen(sub_params));
     }
 }

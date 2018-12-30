@@ -1,7 +1,8 @@
 #include "CharPassGen.h"
 
-CharPassGen::CharPassGen(PassGenParams params) {
-    m_characters = std::vector<char>(params.m_additional_data.begin(), params.m_additional_data.end());
+CharPassGen::CharPassGen(nlohmann::json params) {
+    std::string chars = params[CHARACHTERS];
+    m_characters = std::vector<char>(chars.begin(), chars.end());
 }
 
 size_t CharPassGen::GetLength() {
