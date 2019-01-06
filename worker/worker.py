@@ -6,7 +6,7 @@ import json
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import create_engine
-from algo_proj.DB_objects.base import Base
+from algo_proj.DB_objects.base import Base, SQLALCHEMY_FORMAT_STRING
 from algo_proj.DB_objects.password_setting import PasswordSetting, HashType
 from algo_proj.DB_objects.work_range import WorkRange, Status
 from algo_proj.DB_objects.dict_words import DictWord
@@ -57,7 +57,7 @@ def open_iter_subprocess(exe_path, work_range, pass_settings, i, split):
 def fetch_data_and_run(args):
     # TODO: a way to handle failing - in case execution ends mark ranges as free
     engine = create_engine(
-        'mysql+pymysql://{}:{}@{}:{}/{}'.format(args.user, args.pass_, args.host, args.port, args.DB_name))
+        SQLALCHEMY_FORMAT_STRING.format(args.user, args.pass_, args.host, args.port, args.DB_name))
     session_factory = sessionmaker(bind=engine)
     Base.metadata.create_all(engine)
     session = session_factory()
@@ -98,17 +98,20 @@ def manage_subprocesses(args):
 
 def load_dicts_to_files(args):
     engine = create_engine(
-        'mysql+pymysql://{}:{}@{}:{}/{}'.format(args.user, args.pass_, args.host, args.port, args.DB_name))
+        SQLALCHEMY_FORMAT_STRING.format(args.user, args.pass_, args.host, args.port, args.DB_name))
     session_factory = sessionmaker(bind=engine)
     Base.metadata.create_all(engine)
     with session_factory_scope(session_factory) as session:
         dicts = session.query(Dictionary).all()
-        for dict in dicts:
-            if os.path.isfile(os.path.join(os.path.dirname(args.exe_path), dict.name)):
+        for current_dict in dicts:
+            if os.path.isfile(os.path.join(os.path.dirname(args.exe_path), current_dict.name)):
                 continue
-            with open(os.path.join(os.path.dirname(args.exe_path), dict.name), 'w') as f:
-                print(dict.name)
-                f.writelines(row.word + '\n' for row in session.query(DictWord).filter(DictWord.dict == dict).all())
+            with open(os.path.join(os.path.dirname(args.exe_path), current_dict.name), 'w') as f:
+                print(current_dict.name)
+                f.writelines(row.word + '\n' for row in
+                             session.query(DictWord).
+                             filter(DictWord.dict == current_dict).
+                             all())
 
 
 if __name__ == '__main__':

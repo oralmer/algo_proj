@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 
-
 #define SUB_GEN "sub_genertors"
 #define TYPE "type"
 #define OR "or"

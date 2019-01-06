@@ -17,7 +17,6 @@ int main(int argc, char *argv[]) {
     std::cerr << start << " " << end << " pass:" << password << std::endl;
 
     std::unique_ptr<IPassGen> password_generator = PassGenFactory::BuildPassGen(password_params);
-    std::cerr << password_generator->GetLength() << std::endl;
     auto hasher = Hasher(hash_type);
     for (size_t i = start; i < end && i < password_generator->GetLength(); i++) {
         if (hasher((*password_generator)(i)) == password) {
