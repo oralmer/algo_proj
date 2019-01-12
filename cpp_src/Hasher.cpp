@@ -1,5 +1,4 @@
 #include <utility>
-
 #include "Hasher.h"
 
 std::string Hasher::operator()(std::string password) {

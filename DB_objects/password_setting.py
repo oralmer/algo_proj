@@ -10,14 +10,14 @@ class HashType(pyEnum):
 class PasswordSetting(Base):
     __tablename__ = 'password_settings'
     id = Column(Integer, primary_key=True)
-    pass_type = Column(String(255))
+    pass_params = Column(String(1023))
     hash_type = Column(Enum(HashType))
     hash = Column(String(511))
     complete_pass = Column(String(255))
     is_done = Column(Boolean)
 
-    def __init__(self, pass_type, hash_type, hash_):
-        self.pass_type = pass_type
+    def __init__(self, pass_params, hash_type, hash_):
+        self.pass_params = pass_params
         self.hash_type = hash_type
         self.hash = hash_
         self.is_done = False

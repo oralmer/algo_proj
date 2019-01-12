@@ -1,13 +1,16 @@
 import argparse
 import multiprocessing
+import os
 import subprocess
 import json
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import create_engine
-from algo_proj.DB_objects.base import Base
+from algo_proj.DB_objects.base import Base, SQLALCHEMY_FORMAT_STRING
 from algo_proj.DB_objects.password_setting import PasswordSetting, HashType
 from algo_proj.DB_objects.work_range import WorkRange, Status
+from algo_proj.DB_objects.dict_words import DictWord
+from algo_proj.DB_objects.dictionaries import Dictionary
 from algo_proj.utils.DB_utils import session_factory_scope, session_instance_scope
 
 
@@ -40,22 +43,21 @@ def parse_arguments():
 
 
 def open_iter_subprocess(exe_path, work_range, pass_settings, i, split):
+    print(pass_settings.pass_params)
     return subprocess.Popen([str(obj) for obj in
                              [exe_path,
                               i,
                               min(work_range.end, i + split),
                               pass_settings.hash_type.value,
-                              pass_settings.pass_type,
+                              json.dumps(json.loads(pass_settings.pass_params)),
                               pass_settings.hash]],
                             stdout=subprocess.PIPE)
 
 
 def fetch_data_and_run(args):
-    # TODO: a better way for parallel sessions? there should be but nothing works
-    # TODO: a way to prevent collisions - multiple workers getting the same row
     # TODO: a way to handle failing - in case execution ends mark ranges as free
     engine = create_engine(
-        'mysql+pymysql://{}:{}@{}:{}/{}'.format(args.user, args.pass_, args.host, args.port, args.DB_name))
+        SQLALCHEMY_FORMAT_STRING.format(args.user, args.pass_, args.host, args.port, args.DB_name))
     session_factory = sessionmaker(bind=engine)
     Base.metadata.create_all(engine)
     session = session_factory()
@@ -70,7 +72,11 @@ def fetch_data_and_run(args):
         for i in range(work_range.start, work_range.end, args.split):
             p = open_iter_subprocess(args.exe_path, work_range, pass_settings, i, args.split)
             p.wait()
-            res = json.loads(p.communicate()[0])
+            res = p.communicate()[0]
+            if len(res) == 0:
+                print('process failed!')
+                continue
+            res = json.loads(res)
             print(res)
             with session_instance_scope(session):
                 work_range.status = Status.done
@@ -90,7 +96,26 @@ def manage_subprocesses(args):
         p.join()
 
 
+def load_dicts_to_files(args):
+    engine = create_engine(
+        SQLALCHEMY_FORMAT_STRING.format(args.user, args.pass_, args.host, args.port, args.DB_name))
+    session_factory = sessionmaker(bind=engine)
+    Base.metadata.create_all(engine)
+    with session_factory_scope(session_factory) as session:
+        dicts = session.query(Dictionary).all()
+        for current_dict in dicts:
+            if os.path.isfile(os.path.join(os.path.dirname(args.exe_path), current_dict.name)):
+                continue
+            with open(os.path.join(os.path.dirname(args.exe_path), current_dict.name), 'w') as f:
+                print(current_dict.name)
+                f.writelines(row.word + '\n' for row in
+                             session.query(DictWord).
+                             filter(DictWord.dict == current_dict).
+                             all())
+
+
 if __name__ == '__main__':
     args = parse_arguments()
+    load_dicts_to_files(args)
     manage_subprocesses(args)
     print("out of work!")
