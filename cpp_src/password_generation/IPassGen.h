@@ -28,7 +28,7 @@ struct PassGenParams {
 
 class IPassGen {
 public:
-    virtual size_t GetLength() = 0;
-
-    virtual std::string operator()(size_t index) = 0;
+    virtual size_t GetLength() const = 0;
+    virtual size_t GetMaxPassLength() const = 0;
+    virtual size_t operator()(char *password, size_t index) const = 0;
 };

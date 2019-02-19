@@ -9,6 +9,7 @@ int main(int argc, char *argv[]) {
         std::cerr << "Usage: " << argv[0] << " [START] [END] [HASH TYPE] [PASSWORD TYPE] [HASH]" << std::endl;
         return 1;
     }
+    //TODO: times
     auto start = (size_t) atoi(argv[1]); //TODO: input checking and proper conversion
     auto end = (size_t) atoi(argv[2]);
     auto hash_type = static_cast<HashType>(atoi(argv[3]));
@@ -18,13 +19,17 @@ int main(int argc, char *argv[]) {
 
     std::unique_ptr<IPassGen> password_generator = PassGenFactory::BuildPassGen(password_params);
     auto hasher = Hasher(hash_type);
+    //TODO: a different way to create this buffer.
+    auto password_buffer = (char*)malloc(password_generator->GetMaxPassLength() + 1);
     for (size_t i = start; i < end && i < password_generator->GetLength(); i++) {
-        if (hasher((*password_generator)(i)) == password) {
-            std::cout << R"({"result":true, "password":")" << (*password_generator)(i) << "\"}";
+        (*password_generator)(password_buffer, i);
+        if (hasher(password_buffer) == password) {
+            std::cout << R"({"result":true, "password":")" << password_buffer << "\"}";
             return 0;
         }
     }
     std::cerr << start << " " << end << " done" << std::endl;
     std::cout << R"({"result":false, "password":null})";
+    free(password_buffer);
     return 0;
 }

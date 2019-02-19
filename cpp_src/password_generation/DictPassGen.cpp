@@ -14,12 +14,16 @@ DictPassGen::DictPassGen(nlohmann::json params) {
     }
 }
 
-size_t DictPassGen::GetLength() {
+size_t DictPassGen::GetLength() const {
     return m_words.size();
 }
 
-std::string DictPassGen::operator()(size_t index) {
-    return m_words[index];
+size_t DictPassGen::operator()(char *password, size_t index) const {
+    if (index > m_words.size()) {
+        throw std::runtime_error("index out of range in DictPassGen");
+    }
+    strcpy_s(password, m_words[index].length() + 1, m_words[index].c_str());
+    return m_words[index].length();
 }
 
 std::string DictPassGen::get_current_dir() {
@@ -27,4 +31,15 @@ std::string DictPassGen::get_current_dir() {
     GetModuleFileName(nullptr, buffer, MAX_PATH);
     std::string::size_type pos = std::string(buffer).find_last_of("\\/");
     return std::string(buffer).substr(0, pos) + "\\";
+}
+
+size_t DictPassGen::GetMaxPassLength() const {
+    size_t maxLen = 0;
+    for (const auto &word: m_words){
+        if(word.size() > maxLen){
+            maxLen = word.size();
+        }
+    }
+    return maxLen;
+
 }
