@@ -7,7 +7,7 @@ size_t CartesianPassGen::GetLength() const {
 
 size_t CartesianPassGen::operator()(char *password, size_t index) const {
     if (index > m_length) {
-        throw std::runtime_error("index out of range in CartesianPassGen");
+        throw "index out of range in CartesianPassGen";
     }
     size_t location = 0;
     for (const auto &gen: m_sub_generators) {
@@ -28,11 +28,9 @@ CartesianPassGen::CartesianPassGen(nlohmann::json pramas) {
 }
 
 size_t CartesianPassGen::GetMaxPassLength() const {
-    size_t maxLen = 0;
+    size_t len = 0;
     for (const auto &gen: m_sub_generators){
-        if(gen->GetMaxPassLength() > maxLen){
-            maxLen += gen->GetMaxPassLength();
-        }
+        len += gen->GetMaxPassLength();
     }
-    return maxLen;
+    return len;
 }

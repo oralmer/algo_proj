@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#define SUB_GEN "sub_genertors"
+#define SUB_GEN "sub_generators"
 #define TYPE "type"
 #define OR "or"
 #define CARTESIAN "cartesian"

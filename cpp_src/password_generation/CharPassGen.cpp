@@ -11,7 +11,7 @@ size_t CharPassGen::GetLength() const{
 
 size_t CharPassGen::operator()(char *password, size_t index) const{
     if(index > m_characters.size()){
-        throw std::runtime_error("index out of range in CharPassGen");
+        throw "index out of range in CharPassGen";
     }
     password[0] = m_characters[index];
     password[1] = '\0';

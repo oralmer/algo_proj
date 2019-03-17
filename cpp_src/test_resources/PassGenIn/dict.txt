@@ -1,0 +1,4 @@
+{
+    "type":"dictionary",
+    "path":"test_dict"
+}
