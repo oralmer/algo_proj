@@ -6,7 +6,7 @@ std::string Hasher::operator()(std::string password) {
         case id:
             return IdHash(std::move(password));
         default:
-            throw std::runtime_error("invalid enum in password generator");
+            throw "invalid enum in password generator";
     }
 }
 
