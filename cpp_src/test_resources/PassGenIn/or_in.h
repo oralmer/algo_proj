@@ -1,4 +1,6 @@
-{
+#include <string>
+
+const std::string or_in = R"JSON({
     "type":"or",
     "sub_generators":[
         {
@@ -10,4 +12,4 @@
             "characters":"abcdefghi"
         }
     ]
-}
+})JSON";

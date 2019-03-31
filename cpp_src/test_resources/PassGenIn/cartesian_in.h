@@ -1,4 +1,6 @@
-{
+#include <string>
+
+const std::string cartesian_in = R"JSON({
     "type":"cartesian",
     "sub_generators":[
         {
@@ -10,4 +12,4 @@
             "characters":"abc"
         }
     ]
-}
+})JSON";
