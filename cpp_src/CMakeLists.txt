@@ -66,7 +66,8 @@ link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 add_library(PassGen SHARED
         password_generation/DictPassGen.cpp
         password_generation/DictPassGen.h
-        Hasher.cpp Hasher.h
+        hashing/Hasher.cpp
+        hashing/Hasher.h
         password_generation/PassGenFactory.cpp
         password_generation/PassGenFactory.h
         password_generation/IPassGen.h
