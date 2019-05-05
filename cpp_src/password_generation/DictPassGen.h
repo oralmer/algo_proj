@@ -4,8 +4,10 @@
 #include "PassGenFactory.h"
 #include "nlohmann/json.hpp"
 
+#define DICTS_PATH_ENV "DICTS_PATH"
+
 class DictPassGen : public IPassGen {
-    static std::string get_current_dir();
+    static std::string get_dicts_dir();
 
     std::vector<std::string> m_words;
 public:

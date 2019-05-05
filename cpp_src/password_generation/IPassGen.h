@@ -12,19 +12,6 @@
 #define CHARACHTERS "characters"
 #define PATH "path"
 
-enum PassPartType {
-    cartesian,
-    or_,
-    dict,
-    character
-};
-
-struct PassGenParams {
-    PassPartType m_part_type;
-    std::vector<PassGenParams> m_sub_parts;
-    std::string m_additional_data;
-};
-
 
 class IPassGen {
 public:

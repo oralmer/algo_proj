@@ -3,14 +3,12 @@
 #include <windows.h>
 #include "DictPassGen.h"
 
-static const std::string dicts_dir = R"(C:\Users\or\PycharmProjects\algo_proj\algo_proj\cpp_src\dictionaries\)";
 
 DictPassGen::DictPassGen(nlohmann::json params) { //TODO: fix
     m_words = std::vector<std::string>();
     std::string dict_path = params[PATH];
     std::string line;
-//    std::ifstream dict_file(R"(C:\Users\or\PycharmProjects\algo_proj\algo_proj\cpp_src\dictionaries\test_dict)");
-    std::ifstream dict_file(dicts_dir + dict_path);
+    std::ifstream dict_file(get_dicts_dir() + "/" + dict_path);
     while (getline(dict_file, line)) {
         line.erase(line.find_last_not_of(" \n\r\t")+1); //remove trailing whitespace
         m_words.push_back(line);
@@ -29,12 +27,9 @@ size_t DictPassGen::operator()(char *password, size_t index) const {
     return m_words[index].length();
 }
 
-std::string DictPassGen::get_current_dir() { //TODO: move dicts to relative dir
-//    char buffer[MAX_PATH];
-//    GetModuleFileName(nullptr, buffer, MAX_PATH);
-//    std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-//    return std::string(buffer).substr(0, pos) + "\\";
-    return R"(C:\Users\or\PycharmProjects\algo_proj\algo_proj\cpp_src\password_generation)";
+std::string DictPassGen::get_dicts_dir() {
+    const char* dict_env = std::getenv(DICTS_PATH_ENV);
+    return std::string(dict_env);
 }
 
 size_t DictPassGen::GetMaxPassLength() const {

@@ -3,7 +3,6 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include "password_generation/IPassGen.h"
-#include "Hasher.h"
 #include "password_generation/PassGenFactory.h"
 #include "HelperFuncs.h"
 

@@ -4,7 +4,7 @@ project(cpp_src)
 set(CMAKE_CXX_C)
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=gnu++0x -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=gnu++0x -g -lgmpxx")
 
 include(ExternalProject)
 
@@ -18,7 +18,7 @@ ExternalProject_Add(googletest
 ExternalProject_Add(jspirit
         GIT_REPOSITORY https://github.com/nlohmann/json
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-        )
+        -DJSON_BuildTests=OFF)
 
 #set( boost_URL "http://sourceforge.net/projects/boost/files/boost/1.63.0/boost_1_63_0.tar.bz2" )
 #set( boost_SHA1 "9f1dd4fa364a3e3156a77dc17aa562ef06404ff6" )
@@ -66,8 +66,6 @@ link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 add_library(PassGen SHARED
         password_generation/DictPassGen.cpp
         password_generation/DictPassGen.h
-        hashing/Hasher.cpp
-        hashing/Hasher.h
         password_generation/PassGenFactory.cpp
         password_generation/PassGenFactory.h
         password_generation/IPassGen.h
@@ -86,9 +84,10 @@ add_library(PassGen SHARED
         test_resources/PassGenOut/cartesian_out.h
         test_resources/PassGenOut/dict_out.h
         test_resources/PassGenOut/or_out.h
-        test_resources/PassGenOut/sanity_out.h)
+        test_resources/PassGenOut/sanity_out.h hashing/IHasher.h hashing/HasherFactory.cpp hashing/HasherFactory.h hashing/IDHasher.cpp hashing/IDHasher.h hashing/ModPHasher.cpp hashing/ModPHasher.h hashing/CountTest.cpp hashing/CountTest.h hashing/EllipticCurveHasher.cpp hashing/EllipticCurveHasher.h hashing/ThresholdHasher.cpp hashing/ThresholdHasher.h)
 
 add_dependencies(PassGen jspirit)
+target_link_libraries(PassGen gmpxx gmp)
 
 add_executable(FirstTest test.cpp)
 add_dependencies(FirstTest googletest jspirit PassGen)
