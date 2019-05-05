@@ -1,4 +1,0 @@
-{
-    "type":"character",
-    "characters":"1234567890"
-}

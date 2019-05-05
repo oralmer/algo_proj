@@ -12,7 +12,7 @@ set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 
 ExternalProject_Add(googletest
         GIT_REPOSITORY https://github.com/google/googletest
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -Dgtest_build_tests=OFF
         )
 
 ExternalProject_Add(jspirit
@@ -66,7 +66,8 @@ link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 add_library(PassGen SHARED
         password_generation/DictPassGen.cpp
         password_generation/DictPassGen.h
-        Hasher.cpp Hasher.h
+        hashing/Hasher.cpp
+        hashing/Hasher.h
         password_generation/PassGenFactory.cpp
         password_generation/PassGenFactory.h
         password_generation/IPassGen.h
@@ -77,7 +78,15 @@ add_library(PassGen SHARED
         password_generation/OrPassGen.cpp
         password_generation/OrPassGen.h
         HelperFuncs.cpp
-        HelperFuncs.h)
+        HelperFuncs.h
+        test_resources/PassGenIn/cartesian_in.h
+        test_resources/PassGenIn/dict_in.h
+        test_resources/PassGenIn/or_in.h
+        test_resources/PassGenIn/sanity_in.h
+        test_resources/PassGenOut/cartesian_out.h
+        test_resources/PassGenOut/dict_out.h
+        test_resources/PassGenOut/or_out.h
+        test_resources/PassGenOut/sanity_out.h)
 
 add_dependencies(PassGen jspirit)
 

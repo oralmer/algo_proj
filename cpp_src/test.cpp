@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <fstream>
+#include <unordered_set>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include "password_generation/IPassGen.h"
@@ -7,28 +7,22 @@
 #include "password_generation/PassGenFactory.h"
 #include "HelperFuncs.h"
 
-static const std::string tests_input_dir = R"(C:\Users\or\PycharmProjects\algo_proj\algo_proj\cpp_src\test_resources\PassGenIn\)";
-static const std::string tests_output_dir = R"(C:\Users\or\PycharmProjects\algo_proj\algo_proj\cpp_src\test_resources\PassGenOut\)";
+#include "test_resources/PassGenIn/cartesian_in.h"
+#include "test_resources/PassGenIn/dict_in.h"
+#include "test_resources/PassGenIn/or_in.h"
+#include "test_resources/PassGenIn/sanity_in.h"
+#include "test_resources/PassGenOut/cartesian_out.h"
+#include "test_resources/PassGenOut/dict_out.h"
+#include "test_resources/PassGenOut/or_out.h"
+#include "test_resources/PassGenOut/sanity_out.h"
 
-bool RunPassGenTest(const std::string &filename) {
-    std::ifstream input_file(tests_input_dir + filename);
-    std::ifstream output_file(tests_output_dir + filename);
-    nlohmann::json test_params;
-    input_file >> test_params;
+bool RunPassGenTest(const std::string &input_string, const std::unordered_set<std::string> &expected_output) {
+    nlohmann::json test_params = nlohmann::json::parse(input_string);
 
     std::unique_ptr<IPassGen> password_generator = PassGenFactory::BuildPassGen(test_params);
-    size_t i = 0;
     std::vector<char> password_buffer(password_generator->GetMaxPassLength() + 1);
-    for (std::string line; getline(output_file, line);) {
-//        line.erase(std::remove(line.begin(), line.end(), [](char c) { return c == '\n' || c == '\r'; }), line.end());
-        line.erase( std::remove(line.begin(), line.end(), '\r'), line.end() );
-        line.erase( std::remove(line.begin(), line.end(), '\n'), line.end() );
-        if (i > password_generator->GetLength()) {
-            std::cout << "index out of bounds for:\n";
-            std::cout << test_params << '\n';
-            std::cout << "at index: " << i << '\n';
-            return false;
-        }
+    std::unordered_set<std::string> real_output;
+    for (size_t i = 0; i<password_generator->GetLength(); i++) {
         try {
             (*password_generator)(password_buffer.data(), i);
         }
@@ -38,38 +32,25 @@ bool RunPassGenTest(const std::string &filename) {
             std::cout << "at index: " << i << '\n';
             return false;
         }
-        if (strcmp(password_buffer.data(), line.data()) != 0) {
-            std::cout << "Wrong result for:\n";
-            std::cout << test_params << '\n';
-            std::cout << "at index: " << i << '\n';
-            std::cout << "expected: " << line << '\n';
-            std::cout << "recieved: " << password_buffer << '\n';
-            return false;
-        }
-        i++;
+        std::string result(password_buffer.data());
+        real_output.insert(result);
     }
-    if (i != password_generator->GetLength()) {
-        std::cout << "wrong length for:\n";
-        std::cout << test_params << '\n';
-        std::cout << "reached index: " << i;
-        std::cout << "expected: " << password_generator->GetLength() << '\n';
-        return false;
-    }
-    return true;
+    return real_output == expected_output;
 }
 
 TEST(PasswordGeneration, sanity) {
-    ASSERT_TRUE(RunPassGenTest("sanity.txt"));
+
+    ASSERT_TRUE(RunPassGenTest(sanity_in, sanity_out));
 }
 
 TEST(PasswordGeneration, dict) {
-    ASSERT_TRUE(RunPassGenTest("dict.txt"));
+    ASSERT_TRUE(RunPassGenTest(dict_in, dict_out));
 }
 
 TEST(PasswordGeneration, cartesian) {
-    ASSERT_TRUE(RunPassGenTest("cartesian.txt"));
+    ASSERT_TRUE(RunPassGenTest(cartesian_in, cartesian_out));
 }
 
 TEST(PasswordGeneration, or_) {
-    ASSERT_TRUE(RunPassGenTest("or.txt"));
+    ASSERT_TRUE(RunPassGenTest(or_in, or_out));
 }
