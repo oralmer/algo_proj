@@ -14,6 +14,6 @@ bool ModPHasher::RunSingleTest(std::string password, const std::unique_ptr<Count
 }
 
 
-ModPHasher::ModPHasher(nlohmann::json params) : ThresholdHasher(params){
+ModPHasher::ModPHasher(nlohmann::json params) : ThresholdHasher(params) {
     m_P = (std::string) params[P];
 }

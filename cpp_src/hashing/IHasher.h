@@ -6,8 +6,6 @@
 #define P "p"
 #define TESTS "tests"
 #define CUTOFF "cutoff"
-#define A "a"
-#define B "b"
 
 class IHasher {
 public:

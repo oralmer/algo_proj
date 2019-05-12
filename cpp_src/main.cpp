@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     auto end = (size_t) atoi(argv[2]);
     nlohmann::json hash_params = nlohmann::json::parse(argv[3]);
     nlohmann::json password_params = nlohmann::json::parse(argv[4]);
-    std::cerr << start << " " << end << " hash:" << hash_params <<" pass:" << password_params << std::endl;
+    std::cerr << start << " " << end << " hash:" << hash_params << " pass:" << password_params << std::endl;
     std::unique_ptr<IPassGen> password_generator = PassGenFactory::BuildPassGen(password_params);
     std::unique_ptr<IHasher> hasher = HasherFactory::BuildHasher(hash_params);
     std::vector<char> password_buffer(password_generator->GetMaxPassLength() + 1);
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
             results["results"].push_back(std::string(password_buffer.data()));
         }
     }
-    double total_time = double(clock() - start_time)/double(CLOCKS_PER_SEC);
+    double total_time = double(clock() - start_time) / double(CLOCKS_PER_SEC);
     std::cerr << "time taken: " << total_time;
     std::cout << results;
     return 0;
