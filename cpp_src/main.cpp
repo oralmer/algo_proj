@@ -5,7 +5,6 @@
 #include "hashing/IHasher.h"
 #include "hashing/HasherFactory.h"
 #include "HelperFuncs.h"
-
 //TODO: benchmark - regular + check hasher and passgen separately on flattened list (as test)
 
 int main(int argc, char *argv[]) {
@@ -13,7 +12,6 @@ int main(int argc, char *argv[]) {
         std::cerr << "Usage: " << argv[0] << " [START] [END] [HASH TYPE] [PASSWORD TYPE]" << std::endl;
         return 1;
     }
-    //TODO: times
     auto start = (size_t) atoi(argv[1]); //TODO: input checking and proper conversion
     auto end = (size_t) atoi(argv[2]);
     nlohmann::json hash_params = nlohmann::json::parse(argv[3]);

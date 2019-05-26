@@ -7,7 +7,7 @@ size_t CartesianPassGen::GetLength() const {
 
 size_t CartesianPassGen::operator()(char *password, size_t index) const {
     if (index > m_length) {
-        throw "index out of range in CartesianPassGen";
+        throw std::invalid_argument("index out of range in CartesianPassGen");
     }
     size_t location = 0;
     for (const auto &gen: m_sub_generators) {

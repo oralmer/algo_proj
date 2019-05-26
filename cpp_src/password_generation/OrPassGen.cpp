@@ -7,7 +7,7 @@ size_t OrPassGen::GetLength() const{
 
 size_t OrPassGen::operator()(char *password, size_t index) const{
     if (index > m_length) {
-        throw "index out of range in OrPassGen";
+        throw std::invalid_argument("index out of range in OrPassGen");
     }
     size_t result = 0;
     for (const auto &gen: m_sub_generators) {

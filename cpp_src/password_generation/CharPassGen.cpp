@@ -1,7 +1,7 @@
 #include "CharPassGen.h"
 
 CharPassGen::CharPassGen(nlohmann::json params) {
-    std::string chars = params[CHARACHTERS];
+    std::string chars = params[CHARACTERS];
     m_characters = std::vector<char>(chars.begin(), chars.end());
 }
 
@@ -11,7 +11,7 @@ size_t CharPassGen::GetLength() const{
 
 size_t CharPassGen::operator()(char *password, size_t index) const{
     if(index > m_characters.size()){
-        throw "index out of range in CharPassGen";
+        throw std::invalid_argument("index out of range in CharPassGen");
     }
     password[0] = m_characters[index];
     password[1] = '\0';

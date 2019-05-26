@@ -4,14 +4,14 @@
 #include "ModPHasher.h"
 
 std::unique_ptr<IHasher> HasherFactory::BuildHasher(const nlohmann::json &params) {
-    if(params[TYPE] == ELLIPTIC){
+    if(params[HASH_TYPE] == ELLIPTIC){
         return std::unique_ptr<IHasher>(new EllipticCurveHasher(params));
     }
-    if(params[TYPE] == MODP){
+    if(params[HASH_TYPE] == MODP){
         return std::unique_ptr<IHasher>(new ModPHasher(params));
     }
-    if(params[TYPE] == ID){
+    if(params[HASH_TYPE] == ID){
         return std::unique_ptr<IHasher>(new IDHasher(params));
     }
-    throw "not yet implemented";
+    throw std::invalid_argument("not yet implemented");
 }

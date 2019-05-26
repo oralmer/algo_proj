@@ -9,7 +9,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=gnu++0x -g -lgmpxx")
 include(ExternalProject)
 
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
-#find_package(OpenSSL REQUIRED)
+#ExternalProject_Add(
+#        OpenSSL
+#        URL https://github.com/openssl/openssl/archive/OpenSSL_1_0_1h.tar.gz
+#        CONFIGURE_COMMAND perl Configure VC-WIN64A "--prefix=${CMAKE_INSTALL_PREFIX}"
+#        BUILD_COMMAND "ms\\do_win64a.bat"
+#        COMMAND nmake -f "ms\\ntdll.mak"
+#        BUILD_IN_SOURCE 1
+#        INSTALL_COMMAND nmake -f "ms\\ntdll.mak" install
+#)
+find_package(OpenSSL REQUIRED)
 ExternalProject_Add(googletest
         GIT_REPOSITORY https://github.com/google/googletest
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -Dgtest_build_tests=OFF
@@ -61,6 +70,7 @@ ExternalProject_Add(jspirit
 #add_dependencies( boost::filesystem external_boost )
 
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
+include_directories(${OPENSSL_INCLUDE_DIR})
 link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
 add_library(PassGen SHARED
@@ -77,6 +87,7 @@ add_library(PassGen SHARED
         password_generation/OrPassGen.h
         HelperFuncs.cpp
         HelperFuncs.h
+        test_resources/HasherIn/EChasher_in.h
         test_resources/PassGenIn/cartesian_in.h
         test_resources/PassGenIn/dict_in.h
         test_resources/PassGenIn/or_in.h
@@ -84,12 +95,27 @@ add_library(PassGen SHARED
         test_resources/PassGenOut/cartesian_out.h
         test_resources/PassGenOut/dict_out.h
         test_resources/PassGenOut/or_out.h
-        test_resources/PassGenOut/sanity_out.h hashing/IHasher.h hashing/HasherFactory.cpp hashing/HasherFactory.h hashing/IDHasher.cpp hashing/IDHasher.h hashing/ModPHasher.cpp hashing/ModPHasher.h hashing/CountTest.cpp hashing/CountTest.h hashing/EllipticCurveHasher.cpp hashing/EllipticCurveHasher.h hashing/ThresholdHasher.cpp hashing/ThresholdHasher.h)
+        test_resources/PassGenOut/sanity_out.h
+        hashing/IHasher.h
+        hashing/HasherFactory.cpp
+        hashing/HasherFactory.h
+        hashing/IDHasher.cpp
+        hashing/IDHasher.h
+        hashing/ModPHasher.cpp
+        hashing/ModPHasher.h
+        hashing/CountTest.cpp
+        hashing/CountTest.h
+        hashing/EllipticCurveHasher.cpp
+        hashing/EllipticCurveHasher.h
+        hashing/ThresholdHasher.inl
+        hashing/ThresholdHasher.h
+        hashing/HashHelperFuncs.cpp
+        hashing/HashHelperFuncs.h)
 
 add_dependencies(PassGen jspirit)
-target_link_libraries(PassGen gmpxx gmp)
+target_link_libraries(PassGen gmpxx gmp ${OPENSSL_LIBRARIES})
 
-add_executable(FirstTest test.cpp)
+add_executable(FirstTest tests/PassGenTest.cpp tests/HasherTest.cpp)
 add_dependencies(FirstTest googletest jspirit PassGen)
 target_link_libraries(FirstTest gtest gtest_main PassGen)
 

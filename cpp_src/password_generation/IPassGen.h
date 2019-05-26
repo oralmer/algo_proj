@@ -3,14 +3,14 @@
 #include <string>
 #include <vector>
 
-#define SUB_GEN "sub_generators"
-#define TYPE "type"
-#define OR "or"
-#define CARTESIAN "cartesian"
-#define DICTIONARY "dictionary"
-#define CHARACHTER "character"
-#define CHARACHTERS "characters"
-#define PATH "path"
+static const std::string SUB_GEN = "sub_generators";
+static const std::string PASS_TYPE = "type";
+static const std::string OR = "or";
+static const std::string CARTESIAN = "cartesian";
+static const std::string DICTIONARY = "dictionary";
+static const std::string CHARACTER = "character";
+static const std::string CHARACTERS = "characters";
+static const std::string PATH = "path";
 
 
 class IPassGen {

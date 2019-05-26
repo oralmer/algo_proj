@@ -2,10 +2,9 @@
 
 #include <string>
 
-#define PASSWORD "password"
-#define P "p"
-#define TESTS "tests"
-#define CUTOFF "cutoff"
+static const std::string TESTS = "tests";
+static const std::string CUTOFF = "cutoff";
+static const std::string PASSWORD = "password";
 
 class IHasher {
 public:
