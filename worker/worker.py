@@ -1,9 +1,11 @@
 import argparse
+import datetime
 import multiprocessing
 import os
 import subprocess
 import json
 
+from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import create_engine
 from algo_proj.DB_objects.base import Base, SQLALCHEMY_FORMAT_STRING
@@ -15,16 +17,28 @@ from algo_proj.DB_objects.found_passwords import FoundPasswords
 from algo_proj.utils.DB_utils import session_factory_scope, session_instance_scope
 
 DICTS_PATH = 'DICTS_PATH'
+TIMEOUT_SEC = 30
+
+
+def finish_all(session, pass_settings_id, start):
+    with session_instance_scope(session):
+        session.query(WorkRange). \
+            filter((WorkRange.pass_settings_id == pass_settings_id) & (WorkRange.start >= start)). \
+            update({"status": Status.done})
+
 
 def get_work(session):
+    cutoff_time = datetime.datetime.now() - datetime.timedelta(seconds=TIMEOUT_SEC)
     with session_instance_scope(session):
         res = session.query(WorkRange, PasswordSetting).join(PasswordSetting). \
-            filter(WorkRange.status == Status.free). \
+            filter((WorkRange.status == Status.free) | (
+                (WorkRange.last_updated < cutoff_time) & (WorkRange.status == Status.in_progress))). \
             with_for_update().first()
         if not res:
             return None, None
         work_range, pass_settings = res
         work_range.status = Status.in_progress
+        work_range.last_updated = func.now()
     return work_range, pass_settings
 
 
@@ -56,7 +70,6 @@ def open_iter_subprocess(exe_path, work_range, pass_settings, i, split):
 
 
 def fetch_data_and_run(args):
-    # TODO: a way to handle failing - in case execution ends mark ranges as free
     engine = create_engine(
         SQLALCHEMY_FORMAT_STRING.format(args.user, args.pass_, args.host, args.port, args.DB_name))
     session_factory = sessionmaker(bind=engine)
@@ -74,23 +87,29 @@ def fetch_data_and_run(args):
             p = open_iter_subprocess(args.exe_path, work_range, pass_settings, i, args.split)
             p.wait()
             res = p.communicate()[0]
+            print(res)
             if len(res) == 0:
                 print('process failed!')
                 continue
             res = json.loads(res)
             print(res)
-            with session_instance_scope(session):
-                work_range.status = Status.done
-                for found in res['results']:
-                    found_pass = FoundPasswords(found, pass_settings)
-                    session.add(found_pass)
-        return
+            if res['status'] == 'out of range':
+                finish_all(session, pass_settings.id, work_range.start)
+                break
+            if res['status'] == 'found':
+                with session_instance_scope(session):
+                    for found in res['results']:
+                        print(pass_settings.id)
+                        found_pass = FoundPasswords(found, pass_settings)
+                        session.add(found_pass)
+        with session_instance_scope(session):
+            work_range.status = Status.done
 
 
 def manage_subprocesses(args):
     processes = []
     for i in range(args.max_subproc):
-        p = multiprocessing.Process(target=fetch_data_and_run, args=(args,))
+        p = multiprocessing.Process(target=fetch_data_and_run, args=(args,), )
         processes.append(p)
         p.start()
     for p in processes:

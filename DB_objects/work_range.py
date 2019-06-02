@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, ForeignKey, Enum
+from sqlalchemy import Column, Integer, ForeignKey, Enum, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from algo_proj.DB_objects.base import Base
 from enum import Enum as pyEnum
 
@@ -18,6 +19,7 @@ class WorkRange(Base):
     status = Column(Enum(Status))
     pass_settings_id = Column(Integer, ForeignKey('password_settings.id'))
     pass_setting = relationship("PasswordSetting")
+    last_updated = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __init__(self, start, end, pass_setting):
         self.start = start

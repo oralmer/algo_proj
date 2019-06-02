@@ -1,5 +1,5 @@
 import argparse
-import inspect
+import json
 import os
 import time
 
@@ -81,8 +81,8 @@ def main():
 
     with session_factory_scope(session_factory) as session:
         # TODO: write hash_type less somehow.
-        pass_json = args.password_structure
-        hash_json = args.hash_structure
+        pass_json = json.dumps(json.loads(args.password_structure.replace("'", '"')))
+        hash_json = json.dumps(json.loads(args.hash_structure.replace("'", '"')))
         password_settings = PasswordSetting(pass_json.replace('\'', '"'), hash_json.replace('\'', '"'))
         session.add(password_settings)
         session.flush()  # so we can get ID
@@ -94,19 +94,19 @@ def main():
 
 def wait_for_completion(session_factory, pass_id):
     print('done setting up')
+    curr_res = []
     while True:  # TODO: another way?
         time.sleep(5)
-        curr_res = []
         with session_factory_scope(session_factory) as session:
             res = get_passwords(pass_id, session)
             if len(res) > len(curr_res):
-                print("found passwords: {}".format(res[len(curr_res):]), end='\r')
+                print("found passwords: {}".format([r[0] for r in res][len(curr_res):]))
                 curr_res = res
             future_work = get_unfinished_work(pass_id, session)
             if not future_work:
                 print("checked all passwords, exiting.")
                 break
-    return res.complete_pass
+    return curr_res
 
 
 if __name__ == '__main__':
