@@ -1,5 +1,4 @@
 #include <stdexcept>
-#include <openssl/hmac.h>
 #include <openssl/sha.h>
 #include "HashHelperFuncs.h"
 
@@ -30,19 +29,14 @@ std::vector<uint8_t> HexStringToVec(const std::string &hex_str) {
     return arr;
 }
 
-std::vector<uint8_t> HMACpp(const std::vector<uint8_t> &key, const std::vector<uint8_t> &value) {
+void HMACpp(const std::vector<uint8_t> &key, const std::vector<uint8_t> &value, uint8_t *hash, HMAC_CTX *hmac) {
     unsigned int len = SHA256_DIGEST_LENGTH;
-    unsigned char hash[SHA256_DIGEST_LENGTH];
     size_t keyLen = key.size();
     size_t valueLen = value.size();
 
-    HMAC_CTX *hmac = HMAC_CTX_new();
     HMAC_Init_ex(hmac, key.data(), keyLen, EVP_sha256(), nullptr);
     HMAC_Update(hmac, value.data(), valueLen);
     HMAC_Final(hmac, hash, &len);
-    HMAC_CTX_free(hmac);
-
-    return std::vector<uint8_t>((uint8_t *) hash, (uint8_t *) hash + SHA256_DIGEST_LENGTH);
 }
 
 std::vector<uint8_t> MpzToVector(const mpz_t x) {

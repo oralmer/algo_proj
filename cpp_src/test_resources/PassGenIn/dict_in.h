@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 
 const std::string dict_in = R"JSON({

@@ -1,15 +1,25 @@
 #pragma once
+
 #include "ThresholdHasher.h"
 
 template<class Tester>
-bool ThresholdHasher<Tester>::operator()(std::string password) const {
-    int total = 0;
+bool ThresholdHasher<Tester>::operator()(std::string password) {
+    int successes = 0;
+    int failures = 0;
     for (const auto &test: m_tests) {
-        if (static_cast<const Tester *>(this)->RunSingleTest(password, test)) {
-            total++;
+        if (static_cast<Tester *>(this)->RunSingleTest(password, test)) {
+            successes++;
+        } else {
+            failures++;
+        }
+        if ((float) failures / m_tests.size() > 1 - m_cutoff) {
+            return false;
+        }
+        if ((float) successes / m_tests.size() >= m_cutoff) {
+            return true;
         }
     }
-    return (float) total / m_tests.size() >= m_cutoff;
+    return (float) successes / m_tests.size() >= m_cutoff;
 }
 
 template<class Tester>

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 
 const std::string sanity_in = R"JSON({

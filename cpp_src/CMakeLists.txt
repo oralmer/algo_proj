@@ -20,14 +20,20 @@ set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 #)
 find_package(OpenSSL REQUIRED)
 ExternalProject_Add(googletest
-        GIT_REPOSITORY https://github.com/google/googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG master
+        SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/googletest-src"
+        BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/googletest-build"
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -Dgtest_build_tests=OFF
+        UPDATE_DISCONNECTED true  # TODO: remove
         )
 
 ExternalProject_Add(jspirit
         GIT_REPOSITORY https://github.com/nlohmann/json
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-        -DJSON_BuildTests=OFF)
+        -DJSON_BuildTests=OFF
+        UPDATE_DISCONNECTED true  # TODO: remove
+        )
 
 #set( boost_URL "http://sourceforge.net/projects/boost/files/boost/1.63.0/boost_1_63_0.tar.bz2" )
 #set( boost_SHA1 "9f1dd4fa364a3e3156a77dc17aa562ef06404ff6" )
@@ -115,7 +121,7 @@ add_library(PassGen SHARED
 add_dependencies(PassGen jspirit)
 target_link_libraries(PassGen gmpxx gmp ${OPENSSL_LIBRARIES})
 
-add_executable(FirstTest tests/PassGenTest.cpp tests/HasherTest.cpp)
+add_executable(FirstTest tests/PassGenTest.cpp tests/HasherTest.cpp tests/PreformanceTest.cpp test_resources/PerformanceIn/GenerationIn.h)
 add_dependencies(FirstTest googletest jspirit PassGen)
 target_link_libraries(FirstTest gtest gtest_main PassGen)
 

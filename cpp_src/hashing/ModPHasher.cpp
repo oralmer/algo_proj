@@ -1,6 +1,6 @@
 #include "ModPHasher.h"
 
-bool ModPHasher::RunSingleTest(std::string password, const std::unique_ptr<CountTest> &test) const {
+bool ModPHasher::RunSingleTest(std::string password, const std::unique_ptr<CountTest> &test) {
     int counter = 0;
     mpz_class value;
     do {

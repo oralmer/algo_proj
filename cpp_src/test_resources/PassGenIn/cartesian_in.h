@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 
 const std::string cartesian_in = R"JSON({
