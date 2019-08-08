@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=gnu++0x -g -lgmpxx")
 
 include(ExternalProject)
 
-set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)\
+set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 find_package(OpenSSL REQUIRED)
 ExternalProject_Add(googletest
         GIT_REPOSITORY https://github.com/google/googletest.git
