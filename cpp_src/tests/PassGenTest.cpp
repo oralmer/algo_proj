@@ -2,19 +2,20 @@
 #include <unordered_set>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include "password_generation/IPassGen.h"
-#include "Hasher.h"
-#include "password_generation/PassGenFactory.h"
-#include "HelperFuncs.h"
+#include "../password_generation/IPassGen.h"
+#include "../password_generation/PassGenFactory.h"
+#include "../HelperFuncs.h"
 
-#include "test_resources/PassGenIn/cartesian_in.h"
-#include "test_resources/PassGenIn/dict_in.h"
-#include "test_resources/PassGenIn/or_in.h"
-#include "test_resources/PassGenIn/sanity_in.h"
-#include "test_resources/PassGenOut/cartesian_out.h"
-#include "test_resources/PassGenOut/dict_out.h"
-#include "test_resources/PassGenOut/or_out.h"
-#include "test_resources/PassGenOut/sanity_out.h"
+#include "../test_resources/PassGenIn/cartesian_in.h"
+#include "../test_resources/PassGenIn/dict_in.h"
+#include "../test_resources/PassGenIn/bigDict_in.h"
+#include "../test_resources/PassGenIn/or_in.h"
+#include "../test_resources/PassGenIn/sanity_in.h"
+#include "../test_resources/PassGenOut/cartesian_out.h"
+#include "../test_resources/PassGenOut/dict_out.h"
+#include "../test_resources/PassGenOut/bigDict_out.h"
+#include "../test_resources/PassGenOut/or_out.h"
+#include "../test_resources/PassGenOut/sanity_out.h"
 
 bool RunPassGenTest(const std::string &input_string, const std::unordered_set<std::string> &expected_output) {
     nlohmann::json test_params = nlohmann::json::parse(input_string);
@@ -22,7 +23,7 @@ bool RunPassGenTest(const std::string &input_string, const std::unordered_set<st
     std::unique_ptr<IPassGen> password_generator = PassGenFactory::BuildPassGen(test_params);
     std::vector<char> password_buffer(password_generator->GetMaxPassLength() + 1);
     std::unordered_set<std::string> real_output;
-    for (size_t i = 0; i<password_generator->GetLength(); i++) {
+    for (size_t i = 0; i < password_generator->GetLength(); i++) {
         try {
             (*password_generator)(password_buffer.data(), i);
         }
@@ -39,12 +40,15 @@ bool RunPassGenTest(const std::string &input_string, const std::unordered_set<st
 }
 
 TEST(PasswordGeneration, sanity) {
-
     ASSERT_TRUE(RunPassGenTest(sanity_in, sanity_out));
 }
 
 TEST(PasswordGeneration, dict) {
     ASSERT_TRUE(RunPassGenTest(dict_in, dict_out));
+}
+
+TEST(PasswordGeneration, bigDict) {
+    ASSERT_TRUE(RunPassGenTest(big_dict_in, big_dict_out));
 }
 
 TEST(PasswordGeneration, cartesian) {

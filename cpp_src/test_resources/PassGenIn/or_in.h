@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 
 const std::string or_in = R"JSON({
