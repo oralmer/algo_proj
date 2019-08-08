@@ -8,10 +8,12 @@
 
 #include "../test_resources/PassGenIn/cartesian_in.h"
 #include "../test_resources/PassGenIn/dict_in.h"
+#include "../test_resources/PassGenIn/bigDict_in.h"
 #include "../test_resources/PassGenIn/or_in.h"
 #include "../test_resources/PassGenIn/sanity_in.h"
 #include "../test_resources/PassGenOut/cartesian_out.h"
 #include "../test_resources/PassGenOut/dict_out.h"
+#include "../test_resources/PassGenOut/bigDict_out.h"
 #include "../test_resources/PassGenOut/or_out.h"
 #include "../test_resources/PassGenOut/sanity_out.h"
 
@@ -43,6 +45,10 @@ TEST(PasswordGeneration, sanity) {
 
 TEST(PasswordGeneration, dict) {
     ASSERT_TRUE(RunPassGenTest(dict_in, dict_out));
+}
+
+TEST(PasswordGeneration, bigDict) {
+    ASSERT_TRUE(RunPassGenTest(big_dict_in, big_dict_out));
 }
 
 TEST(PasswordGeneration, cartesian) {

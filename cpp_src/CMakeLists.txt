@@ -25,14 +25,14 @@ ExternalProject_Add(googletest
         SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/googletest-src"
         BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/googletest-build"
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -Dgtest_build_tests=OFF
-        UPDATE_DISCONNECTED true  # TODO: remove
+        UPDATE_DISCONNECTED false
         )
 
 ExternalProject_Add(jspirit
         GIT_REPOSITORY https://github.com/nlohmann/json
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
         -DJSON_BuildTests=OFF
-        UPDATE_DISCONNECTED true  # TODO: remove
+        UPDATE_DISCONNECTED false
         )
 
 #set( boost_URL "http://sourceforge.net/projects/boost/files/boost/1.63.0/boost_1_63_0.tar.bz2" )
@@ -91,6 +91,8 @@ add_library(PassGen SHARED
         password_generation/CartesianPassGen.h
         password_generation/OrPassGen.cpp
         password_generation/OrPassGen.h
+        password_generation/BigDictPassGen.cpp
+        password_generation/BigDictPassGen.h
         HelperFuncs.cpp
         HelperFuncs.h
         test_resources/HasherIn/EChasher_in.h
@@ -116,12 +118,12 @@ add_library(PassGen SHARED
         hashing/ThresholdHasher.inl
         hashing/ThresholdHasher.h
         hashing/HashHelperFuncs.cpp
-        hashing/HashHelperFuncs.h)
+        hashing/HashHelperFuncs.h password_generation/GenerationHelperFuncs.cpp password_generation/GenerationHelperFuncs.h)
 
 add_dependencies(PassGen jspirit)
 target_link_libraries(PassGen gmpxx gmp ${OPENSSL_LIBRARIES})
 
-add_executable(FirstTest tests/PassGenTest.cpp tests/HasherTest.cpp tests/PreformanceTest.cpp test_resources/PerformanceIn/GenerationIn.h)
+add_executable(FirstTest tests/PassGenTest.cpp tests/HasherTest.cpp tests/PreformanceTest.cpp test_resources/PerformanceIn/GenerationIn.h test_resources/PassGenIn/bigDict_in.h test_resources/PerformanceIn/BigDictIn.h test_resources/PassGenOut/bigDict_out.h)
 add_dependencies(FirstTest googletest jspirit PassGen)
 target_link_libraries(FirstTest gtest gtest_main PassGen)
 

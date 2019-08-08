@@ -1,6 +1,6 @@
 #include "IDHasher.h"
 
-bool IDHasher::operator()(std::string password) {
+bool IDHasher::operator()(std::string password) const {
     return password == m_password;
 }
 

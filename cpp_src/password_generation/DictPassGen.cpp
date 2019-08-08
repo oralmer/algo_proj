@@ -2,9 +2,10 @@
 #include <iostream>
 #include <windows.h>
 #include "DictPassGen.h"
+#include "GenerationHelperFuncs.h"
 
 
-DictPassGen::DictPassGen(nlohmann::json params) { //TODO: fix
+DictPassGen::DictPassGen(nlohmann::json params) {
     m_words = std::vector<std::string>();
     std::string dict_path = params[PATH];
     std::string line;
@@ -25,11 +26,6 @@ size_t DictPassGen::operator()(char *password, size_t index) const {
     }
     strcpy(password,  m_words[index].c_str());
     return m_words[index].length();
-}
-
-std::string DictPassGen::GetDictsDir() {
-    const char* dict_env = std::getenv(DICTS_PATH_ENV.c_str());
-    return std::string(dict_env);
 }
 
 size_t DictPassGen::GetMaxPassLength() const {

@@ -5,7 +5,6 @@
 #include "hashing/IHasher.h"
 #include "hashing/HasherFactory.h"
 #include "HelperFuncs.h"
-//TODO: benchmark - regular + check hasher and passgen separately on flattened list (as test)
 
 static const std::string RESULTS = "results";
 static const std::string STATUS = "status";

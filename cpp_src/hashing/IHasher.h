@@ -8,7 +8,7 @@ static const std::string PASSWORD = "password";
 
 class IHasher {
 public:
-    virtual bool operator()(std::string password) = 0;
+    virtual bool operator()(std::string password) const = 0;
 };
 
 

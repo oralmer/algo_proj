@@ -8,6 +8,7 @@ static const std::string PASS_TYPE = "type";
 static const std::string OR = "or";
 static const std::string CARTESIAN = "cartesian";
 static const std::string DICTIONARY = "dictionary";
+static const std::string BIG_DICTIONARY = "big_dictionary";
 static const std::string CHARACTER = "character";
 static const std::string CHARACTERS = "characters";
 static const std::string PATH = "path";
