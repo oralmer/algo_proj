@@ -8,16 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=gnu++0x -g -lgmpxx")
 
 include(ExternalProject)
 
-set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
-#ExternalProject_Add(
-#        OpenSSL
-#        URL https://github.com/openssl/openssl/archive/OpenSSL_1_0_1h.tar.gz
-#        CONFIGURE_COMMAND perl Configure VC-WIN64A "--prefix=${CMAKE_INSTALL_PREFIX}"
-#        BUILD_COMMAND "ms\\do_win64a.bat"
-#        COMMAND nmake -f "ms\\ntdll.mak"
-#        BUILD_IN_SOURCE 1
-#        INSTALL_COMMAND nmake -f "ms\\ntdll.mak" install
-#)
+set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)\
 find_package(OpenSSL REQUIRED)
 ExternalProject_Add(googletest
         GIT_REPOSITORY https://github.com/google/googletest.git
