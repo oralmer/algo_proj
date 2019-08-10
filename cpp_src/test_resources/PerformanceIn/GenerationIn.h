@@ -2,7 +2,7 @@
 
 #include <string>
 
-const std::string generation_in = R"JSON({
+const std::string generation_pref_in = R"JSON({
     "type":"cartesian",
     "sub_generators":[
         {

@@ -109,12 +109,12 @@ add_library(PassGen SHARED
         hashing/ThresholdHasher.inl
         hashing/ThresholdHasher.h
         hashing/HashHelperFuncs.cpp
-        hashing/HashHelperFuncs.h password_generation/GenerationHelperFuncs.cpp password_generation/GenerationHelperFuncs.h)
+        hashing/HashHelperFuncs.h password_generation/GenerationHelperFuncs.cpp password_generation/GenerationHelperFuncs.h hashing/WPA3KeyDeriver.cpp hashing/WPA3KeyDeriver.h)
 
 add_dependencies(PassGen jspirit)
 target_link_libraries(PassGen gmpxx gmp ${OPENSSL_LIBRARIES})
 
-add_executable(FirstTest tests/PassGenTest.cpp tests/HasherTest.cpp tests/PreformanceTest.cpp test_resources/PerformanceIn/GenerationIn.h test_resources/PassGenIn/bigDict_in.h test_resources/PerformanceIn/BigDictIn.h test_resources/PassGenOut/bigDict_out.h)
+add_executable(FirstTest tests/PassGenTest.cpp tests/HasherTest.cpp tests/PreformanceTest.cpp test_resources/PerformanceIn/GenerationIn.h test_resources/PassGenIn/bigDict_in.h test_resources/PerformanceIn/BigDictIn.h test_resources/PassGenOut/bigDict_out.h test_resources/HasherIn/ModPHasher_in.h)
 add_dependencies(FirstTest googletest jspirit PassGen)
 target_link_libraries(FirstTest gtest gtest_main PassGen)
 

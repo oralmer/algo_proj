@@ -8,6 +8,7 @@ static const std::string PASSWORD = "password";
 
 class IHasher {
 public:
+    //Return true <=> password matches the hash.
     virtual bool operator()(std::string password) const = 0;
 };
 
