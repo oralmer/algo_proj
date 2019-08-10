@@ -29,15 +29,6 @@ std::vector<uint8_t> HexStringToVec(const std::string &hex_str) {
     return arr;
 }
 
-void HMACpp(const std::vector<uint8_t> &key, const std::vector<uint8_t> &value, uint8_t *hash, HMAC_CTX *hmac) {
-    unsigned int len = SHA256_DIGEST_LENGTH;
-    size_t keyLen = key.size();
-    size_t valueLen = value.size();
-
-    HMAC_Init_ex(hmac, key.data(), keyLen, EVP_sha256(), nullptr);
-    HMAC_Update(hmac, value.data(), valueLen);
-    HMAC_Final(hmac, hash, &len);
-}
 
 std::vector<uint8_t> MpzToVector(const mpz_t x) {
     size_t size = (mpz_sizeinbase(x, 2) + CHAR_BIT - 1) / CHAR_BIT;

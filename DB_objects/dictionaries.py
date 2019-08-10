@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer
-from algo_proj.DB_objects.base import Base
+from DB_objects.base import Base
 
 
 class Dictionary(Base):

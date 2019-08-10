@@ -16,7 +16,12 @@ static const std::string PATH = "path";
 
 class IPassGen {
 public:
+    //return the number of passwords in the generator
     virtual size_t GetLength() const = 0;
+
+    //return the length of the longest password in the generator
     virtual size_t GetMaxPassLength() const = 0;
+
+    //write the password for index into *password, return it's size.
     virtual size_t operator()(char *password, size_t index) const = 0;
 };
