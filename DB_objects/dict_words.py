@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, ForeignKey, Integer
 from sqlalchemy.orm import relationship
-from algo_proj.DB_objects.base import Base
+from DB_objects.base import Base
 
 
 class DictWord(Base):

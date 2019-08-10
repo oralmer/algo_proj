@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Text, Integer
-from algo_proj.DB_objects.base import Base
+from DB_objects.base import Base
 
 
 class PasswordSetting(Base):

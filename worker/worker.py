@@ -8,13 +8,13 @@ import json
 from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import create_engine
-from algo_proj.DB_objects.base import Base, SQLALCHEMY_FORMAT_STRING
-from algo_proj.DB_objects.password_setting import PasswordSetting
-from algo_proj.DB_objects.work_range import WorkRange, Status
-from algo_proj.DB_objects.dict_words import DictWord
-from algo_proj.DB_objects.dictionaries import Dictionary
-from algo_proj.DB_objects.found_passwords import FoundPasswords
-from algo_proj.utils.DB_utils import session_factory_scope, session_instance_scope
+from DB_objects.base import Base, SQLALCHEMY_FORMAT_STRING
+from DB_objects.password_setting import PasswordSetting
+from DB_objects.work_range import WorkRange, Status
+from DB_objects.dict_words import DictWord
+from DB_objects.dictionaries import Dictionary
+from DB_objects.found_passwords import FoundPasswords
+from utils.DB_utils import session_factory_scope, session_instance_scope
 
 DICTS_PATH = 'DICTS_PATH'
 TIMEOUT_SEC = 30
