@@ -14,7 +14,7 @@ The DB admin takes the structure of the password, and the collected side-channel
 
 basic usage (Can also take DB params such as port, password, etc.):
 
-`DB_adm <start index> <end index> <password json> <hashing json> <split length>`
+`DB_adm <start index> <end index> <hashing json> <password json> <split length>`
 
 The workers will then work according to the JSONs, each time querying a split of length <split length> from the DB, until all passwords from  <start index> to <end index> have been checked.
 
@@ -34,7 +34,7 @@ For examples of JSON structure, see the CPP worker's tests.
 
 **dict_words + dictionaries**: A dictionary's name and words. 
 
-## Worker manager:
+## Worker manager
 
 The worker opens multiple subprocesses. each subprocess then queries the DB for a work range, and calls the CPP worker on it.
 

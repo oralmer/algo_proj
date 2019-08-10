@@ -59,7 +59,6 @@ def parse_arguments():
 
 
 def open_iter_subprocess(exe_path, work_range, pass_settings, i, split):
-    print(pass_settings.pass_params)
     return subprocess.Popen([str(obj) for obj in
                              [exe_path,
                               i,
@@ -82,7 +81,7 @@ def fetch_data_and_run(args):
             return
         if args.split == 0:
             args.split = work_range.end - work_range.start
-
+        success = True
         for i in range(work_range.start, work_range.end, args.split):
             p = open_iter_subprocess(args.exe_path, work_range, pass_settings, i, args.split)
             p.wait()
@@ -90,6 +89,7 @@ def fetch_data_and_run(args):
             print(res)
             if len(res) == 0:
                 print('process failed!')
+                success = False
                 continue
             res = json.loads(res)
             print(res)
@@ -103,7 +103,10 @@ def fetch_data_and_run(args):
                         found_pass = FoundPasswords(found, pass_settings)
                         session.add(found_pass)
         with session_instance_scope(session):
-            work_range.status = Status.done
+            if success:
+                work_range.status = Status.done
+            else:
+                work_range.status = Status.free
 
 
 def manage_subprocesses(args):
